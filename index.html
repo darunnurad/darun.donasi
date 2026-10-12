@@ -1,0 +1,931 @@
+<!DOCTYPE html>
+<html lang="su">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Darun Akhirusshiam — Tepang Wae</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg-0: #F5E6D3;
+  --bg-1: #FBF2E5;
+  --border: #E4D2B6;
+  --border-hi: #D9C4A8;
+  --text: #2C1A14;
+  --text-2: #7A5A44;
+  --text-3: #A08974;
+  --accent: #D95A2B;
+  --accent-hi: #E8651E;
+  --accent-dark: #A63E0A;
+  --gold: #EAA31D;
+  --cream: #F7E9DF;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'Inter', Arial, sans-serif;
+  background: var(--bg-0);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 32px 16px;
+  -webkit-font-smoothing: antialiased;
+}
+.container {
+  width: 100%;
+  max-width: 440px;
+  background: var(--bg-1);
+  border: 2px solid var(--border);
+  border-radius: 28px;
+  padding: 40px 28px 34px;
+  box-shadow: 0 12px 40px rgba(217, 90, 43, 0.15);
+  text-align: center;
+  position: relative;
+}
+.container::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 65%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, var(--accent), var(--gold), var(--accent), transparent);
+  border-radius: 4px;
+}
+.avatar-wrap {
+  width: 130px;
+  height: 130px;
+  margin: 0 auto 20px;
+  position: relative;
+}
+.avatar-icon {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  border: 4px solid var(--bg-1);
+  background-color: var(--cream);
+  background-image: url("icon.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  box-shadow: 0 0 0 3px var(--accent);
+  overflow: hidden;
+}
+.name {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--accent);
+  margin-bottom: 10px;
+  line-height: 1.3;
+  padding: 0 8px;
+}
+.name .verified {
+  color: var(--gold);
+  margin-left: 4px;
+}
+.bio {
+  font-size: 13.5px;
+  color: var(--text-2);
+  margin-bottom: 28px;
+  line-height: 1.6;
+  padding: 0 14px;
+}
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.link-btn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 18px;
+  border-radius: 16px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--bg-1);
+  border: 1.5px solid var(--border);
+  transition: all 0.25s ease;
+  cursor: pointer;
+}
+.link-btn:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(217, 90, 43, 0.15);
+}
+.link-btn .icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+}
+.link-btn .icon img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 10px;
+}
+.link-btn .label {
+  flex: 1;
+  text-align: left;
+  min-width: 0;
+}
+.link-btn .label .main {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+.link-btn .arrow {
+  color: var(--text-3);
+  font-size: 13px;
+  transition: all 0.25s;
+}
+.link-btn:hover .arrow {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+.qris-section {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 2px dashed var(--border-hi);
+}
+.qris-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.qris-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+}
+.qris-sub {
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.qris-frame {
+  background: #FFFFFF;
+  border-radius: 18px;
+  padding: 14px;
+  display: inline-block;
+  border: 2px solid var(--border);
+  box-shadow: 0 8px 24px rgba(217, 90, 43, 0.12);
+}
+.qris-img {
+  display: block;
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+  border-radius: 10px;
+}
+.qris-note {
+  margin-top: 14px;
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* ==================== CHAT SECTION ==================== */
+.chat-section {
+  margin-top: 28px;
+  padding-top: 26px;
+  border-top: 2px dashed var(--border-hi);
+  text-align: left;
+  width: 100%;
+}
+.chat-head {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.chat-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 15px;
+}
+.chat-title {
+  font-size: 15px;
+  font-weight: 800;
+  color: var(--text);
+}
+.chat-sub {
+  font-size: 11.5px;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  text-align: center;
+}
+.chat-user-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+.chat-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+.chat-user-email {
+  flex: 1;
+  font-size: 12.5px;
+  color: var(--text-2);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 600;
+}
+.btn-logout {
+  background: transparent;
+  border: 1.5px solid var(--border-hi);
+  color: var(--text-3);
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.btn-logout:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.chat-list {
+  max-height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 4px 2px 8px 2px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+.chat-list::-webkit-scrollbar { width: 6px; }
+.chat-list::-webkit-scrollbar-thumb {
+  background: var(--border-hi);
+  border-radius: 3px;
+}
+.chat-empty {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--text-3);
+  font-style: italic;
+  padding: 20px 10px;
+}
+.chat-msg {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  width: 100%;
+  margin: 0;
+}
+.chat-msg-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.chat-msg-avatar {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--accent), var(--gold));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-weight: 800;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.chat-msg-email {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--accent-dark);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+.chat-msg-time {
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  flex-shrink: 0;
+}
+.chat-msg-time-full {
+  font-size: 10px;
+  color: var(--text-3);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--border);
+  letter-spacing: 0.01em;
+}
+.chat-msg-text {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.55;
+  word-wrap: break-word;
+  word-break: break-word;
+}
+.chat-form {
+  display: flex;
+  gap: 8px;
+  align-items: flex-end;
+  width: 100%;
+}
+.chat-form textarea {
+  flex: 1;
+  resize: none;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--cream);
+  font-family: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  outline: none;
+  min-height: 46px;
+  max-height: 110px;
+  line-height: 1.4;
+  min-width: 0;
+}
+.chat-form textarea:focus {
+  border-color: var(--accent);
+  background: #FFFFFF;
+}
+.btn-send {
+  padding: 12px 16px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.btn-send:hover { background: var(--accent-hi); }
+.btn-send:disabled { opacity: 0.55; cursor: not-allowed; }
+
+/* ==================== MODAL LOGIN ==================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(44, 26, 20, 0.55);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.modal-overlay.active { display: flex; }
+.modal-card {
+  background: var(--bg-1);
+  border: 2px solid var(--border);
+  border-radius: 24px;
+  padding: 32px 26px 26px;
+  width: 100%;
+  max-width: 380px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+}
+.modal-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 14px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+}
+.modal-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.modal-sub {
+  font-size: 12.5px;
+  color: var(--text-2);
+  margin-bottom: 22px;
+  line-height: 1.5;
+  padding: 0 6px;
+}
+.form-group {
+  text-align: left;
+  margin-bottom: 14px;
+}
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-2);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+}
+.form-group input {
+  width: 100%;
+  padding: 13px 16px;
+  border-radius: 12px;
+  border: 1.5px solid var(--border);
+  background: var(--cream);
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-group input:focus {
+  border-color: var(--accent);
+  background: #FFFFFF;
+}
+.btn-primary {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.2s;
+  box-shadow: 0 6px 16px rgba(217, 90, 43, 0.30);
+  margin-top: 6px;
+}
+.btn-primary:hover { background: var(--accent-hi); }
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.modal-error {
+  font-size: 12px;
+  color: #C0392B;
+  margin-top: 10px;
+  min-height: 16px;
+  font-weight: 600;
+}
+
+@media (max-width: 480px) {
+  body { padding: 20px 12px; }
+  .container { padding: 32px 20px 26px; border-radius: 22px; }
+  .avatar-wrap, .avatar-icon { width: 110px; height: 110px; }
+  .name { font-size: 22px; }
+  .bio { font-size: 12.5px; }
+  .qris-img { width: 180px; height: 180px; }
+  .modal-card { padding: 26px 20px 22px; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <div class="avatar-wrap">
+    <div class="avatar-icon"></div>
+  </div>
+
+  <h1 class="name">
+    Darun Akhirusshiam<span class="verified">•</span>
+  </h1>
+  <p class="bio">
+    Keprok Atuh! 👋<br>
+    Wayahna, kudu follow atawa subrek
+  </p>
+
+  <div class="links">
+
+    <a href="https://wa.me/6283197725238" class="link-btn" target="_blank" rel="noopener">
+      <span class="icon"><img src="icon-wa.png" alt="WhatsApp"></span>
+      <span class="label"><span class="main">WhatsApp</span></span>
+      <span class="arrow">➜</span>
+    </a>
+
+    <a href="https://instagram.com/darunakhirusshiam" class="link-btn" target="_blank" rel="noopener">
+      <span class="icon"><img src="icon-ig.png" alt="Instagram"></span>
+      <span class="label"><span class="main">Instagram</span></span>
+      <span class="arrow">➜</span>
+    </a>
+
+    <a href="https://tiktok.com/@darunakh1rusm" class="link-btn" target="_blank" rel="noopener">
+      <span class="icon"><img src="icon-tt.png" alt="TikTok"></span>
+      <span class="label"><span class="main">TikTok</span></span>
+      <span class="arrow">➜</span>
+    </a>
+
+    <a href="https://t.me/zxelvoid" class="link-btn" target="_blank" rel="noopener">
+      <span class="icon"><img src="icon-tg.png" alt="Telegram"></span>
+      <span class="label"><span class="main">Telegram</span></span>
+      <span class="arrow">➜</span>
+    </a>
+
+    <a href="https://youtube.com/@DarunMods28" class="link-btn" target="_blank" rel="noopener">
+      <span class="icon"><img src="icon-yt.png" alt="YouTube"></span>
+      <span class="label"><span class="main">YouTube</span></span>
+      <span class="arrow">➜</span>
+    </a>
+
+  </div>
+
+  <div class="qris-section">
+    <div class="qris-head">
+      <div class="qris-title">ZXEL STORE</div>
+    </div>
+    <div class="qris-sub">Scan · Traktir · Hatur Nuhun</div>
+
+    <div class="qris-frame">
+      <img src="qris.jpg" alt="QRIS" class="qris-img">
+    </div>
+
+    <div class="qris-note">
+      Scan make aplikasi bank atawa e-wallet naon wae nu aya QRIS-na
+    </div>
+  </div>
+
+  <div class="chat-section">
+    <div class="chat-head">
+      <div class="chat-logo">💬</div>
+      <div class="chat-title">Chat & Komentar</div>
+    </div>
+    <div class="chat-sub">Kirim Pesan Di Bawah Ini!</div>
+
+    <div class="chat-user-bar" id="userBar" style="display:none;">
+      <div class="chat-user-avatar" id="userAvatar">?</div>
+      <div class="chat-user-email" id="userEmail">-</div>
+      <button type="button" class="btn-logout" id="btnLogout">Logout</button>
+    </div>
+
+    <div class="chat-form" id="chatForm" style="display:none;">
+      <textarea id="chatInput" placeholder="Tulis komentar atau pesan..." maxlength="500" rows="1"></textarea>
+      <button type="button" class="btn-send" id="btnSend">
+        <span>Kirim</span>
+        <span>➜</span>
+      </button>
+    </div>
+
+    <div class="chat-list" id="chatList">
+      <div class="chat-empty">Memuat komentar...</div>
+    </div>
+  </div>
+
+</div>
+
+<div class="modal-overlay" id="loginModal">
+  <div class="modal-card">
+    <div class="modal-icon">✉️</div>
+    <div class="modal-title">Login Duluch!</div>
+    <div class="modal-sub">Masukkan email kalian untuk ngirim komentar</div>
+
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="emailInput">Email</label>
+        <input type="email" id="emailInput" placeholder="nama@email.com" required autocomplete="email">
+      </div>
+      <button type="submit" class="btn-primary" id="btnLogin">Masuk & Mulai Chat</button>
+      <div class="modal-error" id="loginError"></div>
+    </form>
+  </div>
+</div>
+
+<script>
+(function() {
+  "use strict";
+
+  var FIREBASE_BASE = "https://turtleevent-778ce-default-rtdb.firebaseio.com";
+  var COMMENTS_PATH = "Comments";
+  var POLL_INTERVAL = 2000; // cek tiap 2 detik
+
+  var loginModal = document.getElementById("loginModal");
+  var loginForm = document.getElementById("loginForm");
+  var emailInput = document.getElementById("emailInput");
+  var loginError = document.getElementById("loginError");
+  var btnLogin = document.getElementById("btnLogin");
+  var userBar = document.getElementById("userBar");
+  var userAvatar = document.getElementById("userAvatar");
+  var userEmail = document.getElementById("userEmail");
+  var btnLogout = document.getElementById("btnLogout");
+  var chatForm = document.getElementById("chatForm");
+  var chatInput = document.getElementById("chatInput");
+  var btnSend = document.getElementById("btnSend");
+  var chatList = document.getElementById("chatList");
+
+  var currentUser = null;
+  var pollTimer = null;
+  var lastSnapshot = ""; // untuk bandingin perubahan
+
+  // ==================== SESSION ====================
+  function loadSession() {
+    try {
+      var saved = localStorage.getItem("user_email");
+      if (saved) currentUser = { email: saved };
+    } catch (e) {}
+  }
+  function saveSession(email) {
+    try { localStorage.setItem("user_email", email); } catch (e) {}
+  }
+  function clearSession() {
+    try { localStorage.removeItem("user_email"); } catch (e) {}
+  }
+
+  function updateUI() {
+    if (currentUser) {
+      loginModal.classList.remove("active");
+      userBar.style.display = "flex";
+      chatForm.style.display = "flex";
+      userEmail.textContent = currentUser.email;
+      userAvatar.textContent = currentUser.email.charAt(0).toUpperCase();
+    } else {
+      loginModal.classList.add("active");
+      userBar.style.display = "none";
+      chatForm.style.display = "none";
+    }
+  }
+
+  // ==================== LOGIN ====================
+  loginForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    loginError.textContent = "";
+    var email = emailInput.value.trim().toLowerCase();
+    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!re.test(email)) {
+      loginError.textContent = "Format email henteu valid.";
+      return;
+    }
+    btnLogin.disabled = true;
+    btnLogin.textContent = "Memuat...";
+    setTimeout(function() {
+      currentUser = { email: email };
+      saveSession(email);
+      updateUI();
+      btnLogin.disabled = false;
+      btnLogin.textContent = "Asup & Mulai Chat";
+      emailInput.value = "";
+    }, 300);
+  });
+
+  btnLogout.addEventListener("click", function() {
+    if (!confirm("Yakin hayang logout?")) return;
+    currentUser = null;
+    clearSession();
+    updateUI();
+  });
+
+  // ==================== UTIL ====================
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#039;");
+  }
+
+  function relativeTime(ts) {
+    if (!ts) return "—";
+    var d = new Date(ts);
+    if (isNaN(d.getTime())) return "—";
+
+    var now = Date.now();
+    var diffSec = Math.floor((now - d.getTime()) / 1000);
+
+    if (diffSec < 5) return "baru wae";
+    if (diffSec < 60) return diffSec + " detik yang lalu";
+
+    var diffMin = Math.floor(diffSec / 60);
+    if (diffMin < 60) return diffMin + " menit yang lalu";
+
+    var diffHour = Math.floor(diffMin / 60);
+    if (diffHour < 24) return diffHour + " jam yang lalu";
+
+    var diffDay = Math.floor(diffHour / 24);
+    if (diffDay < 7) return diffDay + " hari yang lalu";
+
+    var diffWeek = Math.floor(diffDay / 7);
+    if (diffWeek < 4) return diffWeek + " minggu yang lalu";
+
+    var diffMonth = Math.floor(diffDay / 30);
+    if (diffMonth < 12) return diffMonth + " bulan yang lalu";
+
+    var diffYear = Math.floor(diffDay / 365);
+    return diffYear + " tahun yang lalu";
+  }
+
+  function formatFullDateTime(ts) {
+    if (!ts) return "—";
+    var d = new Date(ts);
+    if (isNaN(d.getTime())) return "—";
+
+    var hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+    var bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni",
+                 "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+
+    var namaHari = hari[d.getDay()];
+    var tgl = d.getDate();
+    var namaBulan = bulan[d.getMonth()];
+    var tahun = d.getFullYear();
+
+    var jam = String(d.getHours()).padStart(2, "0");
+    var menit = String(d.getMinutes()).padStart(2, "0");
+    var detik = String(d.getSeconds()).padStart(2, "0");
+
+    return namaHari + ", " + tgl + " " + namaBulan + " " + tahun + " · " + jam + ":" + menit + ":" + detik;
+  }
+
+  // ==================== FIREBASE REST ====================
+  async function fbPost(path, data) {
+    var url = FIREBASE_BASE + "/" + path + ".json";
+    var res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data)
+    });
+    var text = await res.text();
+    if (!res.ok) {
+      throw new Error("HTTP " + res.status + " — " + text.substring(0, 200));
+    }
+    return JSON.parse(text);
+  }
+
+  // ==================== RENDER ====================
+  function renderComments(data) {
+    if (!data) {
+      chatList.innerHTML = '<div class="chat-empty">Belum ada yang komentar</div>';
+      return;
+    }
+    var comments = Object.keys(data).map(function(id) {
+      return Object.assign({ id: id }, data[id]);
+    }).sort(function(a, b) {
+      return (b.created || 0) - (a.created || 0);
+    }).slice(0, 100);
+
+    if (comments.length === 0) {
+      chatList.innerHTML = '<div class="chat-empty">Belum ada yang komentar</div>';
+      return;
+    }
+
+    chatList.innerHTML = comments.map(function(c) {
+      var initial = (c.email || "?").charAt(0).toUpperCase();
+      var relTime = relativeTime(c.created);
+      var fullTime = formatFullDateTime(c.created);
+      return '<div class="chat-msg">' +
+        '<div class="chat-msg-head">' +
+          '<div class="chat-msg-avatar">' + initial + '</div>' +
+          '<div class="chat-msg-email">' + escapeHtml(c.email || "Anonim") + '</div>' +
+          '<div class="chat-msg-time">' + relTime + '</div>' +
+        '</div>' +
+        '<div class="chat-msg-time-full">' + fullTime + '</div>' +
+        '<div class="chat-msg-text">' + escapeHtml(c.text || "") + '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  // ==================== REALTIME POLLING ====================
+  // Cek Firebase tiap 2 detik, render cuma kalau data berubah.
+  // Jadi kalau admin hapus komentar → langsung hilang max 2 detik.
+  async function pollComments() {
+    if (document.hidden) return; // hemat resource kalau tab gak aktif
+    try {
+      var url = FIREBASE_BASE + "/" + COMMENTS_PATH + ".json";
+      var res = await fetch(url, { cache: "no-store" });
+      var text = await res.text();
+
+      // Kalau data sama persis dengan sebelumnya → skip render
+      if (text === lastSnapshot) return;
+
+      lastSnapshot = text;
+
+      var data = null;
+      try { data = JSON.parse(text); } catch (e) { data = null; }
+      renderComments(data);
+    } catch (err) {
+      console.error("Poll error:", err);
+      // Jangan timpa list kalau cuma error jaringan sementara
+    }
+  }
+
+  function startPolling() {
+    if (pollTimer) clearInterval(pollTimer);
+    pollComments(); // langsung cek sekali
+    pollTimer = setInterval(pollComments, POLL_INTERVAL);
+  }
+
+  // Refresh lagi saat tab kembali aktif (biar gak nunggu 2 detik)
+  document.addEventListener("visibilitychange", function() {
+    if (!document.hidden) pollComments();
+  });
+
+  // ==================== KIRIM KOMENTAR ====================
+  async function kirimKomentar() {
+    if (!currentUser) {
+      alert("Login dulu ya");
+      return;
+    }
+    var text = chatInput.value.trim();
+    if (!text) return;
+    if (text.length > 500) return;
+
+    btnSend.disabled = true;
+    try {
+      await fbPost(COMMENTS_PATH, {
+        email: currentUser.email,
+        text: text,
+        created: Date.now()
+      });
+      chatInput.value = "";
+      chatInput.style.height = "auto";
+      // Paksa refresh langsung (reset snapshot biar ke-render)
+      lastSnapshot = "";
+      await pollComments();
+    } catch (err) {
+      console.error(err);
+      alert("Gagal ngirim: " + err.message);
+    } finally {
+      btnSend.disabled = false;
+    }
+  }
+
+  btnSend.addEventListener("click", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    kirimKomentar();
+  });
+
+  chatForm.addEventListener("submit", function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    kirimKomentar();
+    return false;
+  });
+
+  chatInput.addEventListener("keydown", function(e) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      e.stopPropagation();
+      kirimKomentar();
+    }
+  });
+
+  chatInput.addEventListener("input", function() {
+    chatInput.style.height = "auto";
+    chatInput.style.height = Math.min(chatInput.scrollHeight, 110) + "px";
+  });
+
+  // ==================== INIT ====================
+  loadSession();
+  updateUI();
+  startPolling();
+})();
+</script>
+
+</body>
+</html>
