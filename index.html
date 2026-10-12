@@ -291,7 +291,7 @@ body {
   color: var(--accent);
 }
 .chat-list {
-  max-height: 320px;
+  max-height: 420px;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
@@ -371,6 +371,96 @@ body {
   word-wrap: break-word;
   word-break: break-word;
 }
+
+/* ==================== REPLY STYLES ==================== */
+.chat-msg-actions {
+  margin-top: 10px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  display: flex;
+  justify-content: flex-end;
+}
+.btn-reply-toggle {
+  background: transparent;
+  border: none;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-reply-toggle:hover {
+  background: rgba(217, 90, 43, 0.08);
+}
+.reply-form {
+  margin-top: 10px;
+  display: none;
+  gap: 6px;
+  align-items: flex-end;
+}
+.reply-form.active { display: flex; }
+.reply-form textarea {
+  flex: 1;
+  resize: none;
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: #FFFFFF;
+  font-family: inherit;
+  font-size: 12.5px;
+  color: var(--text);
+  outline: none;
+  min-height: 38px;
+  max-height: 90px;
+  line-height: 1.4;
+  min-width: 0;
+}
+.reply-form textarea:focus { border-color: var(--accent); }
+.btn-reply-send {
+  padding: 9px 12px;
+  border-radius: 10px;
+  border: none;
+  background: var(--accent);
+  color: #FFFFFF;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  flex-shrink: 0;
+  height: 38px;
+}
+.btn-reply-send:hover { background: var(--accent-hi); }
+.btn-reply-send:disabled { opacity: 0.55; cursor: not-allowed; }
+
+.replies-list {
+  margin-top: 12px;
+  padding-left: 14px;
+  border-left: 2px solid var(--border-hi);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.reply-msg {
+  background: rgba(255, 255, 255, 0.55);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  width: 100%;
+}
+.reply-msg .chat-msg-head { margin-bottom: 6px; }
+.reply-msg .chat-msg-avatar {
+  width: 18px; height: 18px; font-size: 9px;
+}
+.reply-msg .chat-msg-email { font-size: 11px; }
+.reply-msg .chat-msg-time { font-size: 9.5px; }
+.reply-msg .chat-msg-text { font-size: 12.5px; }
+.reply-msg .chat-msg-time-full { display: none; }
+
 .chat-form {
   display: flex;
   gap: 8px;
@@ -642,7 +732,7 @@ body {
 
   var FIREBASE_BASE = "https://turtleevent-778ce-default-rtdb.firebaseio.com";
   var COMMENTS_PATH = "Comments";
-  var POLL_INTERVAL = 2000; // cek tiap 2 detik
+  var POLL_INTERVAL = 2000;
 
   var loginModal = document.getElementById("loginModal");
   var loginForm = document.getElementById("loginForm");
@@ -660,7 +750,8 @@ body {
 
   var currentUser = null;
   var pollTimer = null;
-  var lastSnapshot = ""; // untuk bandingin perubahan
+  var lastSnapshot = "";
+  var openReplyForms = {}; // simpan id komentar yang form balasannya terbuka
 
   // ==================== SESSION ====================
   function loadSession() {
@@ -796,6 +887,29 @@ body {
   }
 
   // ==================== RENDER ====================
+  function renderReply(r) {
+    var initial = (r.email || "?").charAt(0).toUpperCase();
+    return '<div class="reply-msg">' +
+      '<div class="chat-msg-head">' +
+        '<div class="chat-msg-avatar">' + initial + '</div>' +
+        '<div class="chat-msg-email">' + escapeHtml(r.email || "Anonim") + '</div>' +
+        '<div class="chat-msg-time">' + relativeTime(r.created) + '</div>' +
+      '</div>' +
+      '<div class="chat-msg-text">' + escapeHtml(r.text || "") + '</div>' +
+    '</div>';
+  }
+
+  function renderReplies(replies) {
+    if (!replies) return "";
+    var list = Object.keys(replies).map(function(id) {
+      return Object.assign({ id: id }, replies[id]);
+    }).sort(function(a, b) {
+      return (a.created || 0) - (b.created || 0);
+    });
+    if (list.length === 0) return "";
+    return '<div class="replies-list">' + list.map(renderReply).join("") + '</div>';
+  }
+
   function renderComments(data) {
     if (!data) {
       chatList.innerHTML = '<div class="chat-empty">Belum ada yang komentar</div>';
@@ -816,7 +930,8 @@ body {
       var initial = (c.email || "?").charAt(0).toUpperCase();
       var relTime = relativeTime(c.created);
       var fullTime = formatFullDateTime(c.created);
-      return '<div class="chat-msg">' +
+      var isReplyOpen = openReplyForms[c.id] ? "active" : "";
+      return '<div class="chat-msg" data-id="' + c.id + '">' +
         '<div class="chat-msg-head">' +
           '<div class="chat-msg-avatar">' + initial + '</div>' +
           '<div class="chat-msg-email">' + escapeHtml(c.email || "Anonim") + '</div>' +
@@ -824,23 +939,27 @@ body {
         '</div>' +
         '<div class="chat-msg-time-full">' + fullTime + '</div>' +
         '<div class="chat-msg-text">' + escapeHtml(c.text || "") + '</div>' +
+        '<div class="chat-msg-actions">' +
+          '<button type="button" class="btn-reply-toggle" data-reply-id="' + c.id + '">↩ Balas</button>' +
+        '</div>' +
+        '<div class="reply-form ' + isReplyOpen + '" data-reply-form="' + c.id + '">' +
+          '<textarea placeholder="Tulis balasan..." maxlength="500" rows="1" data-reply-input="' + c.id + '"></textarea>' +
+          '<button type="button" class="btn-reply-send" data-reply-send="' + c.id + '">Kirim</button>' +
+        '</div>' +
+        renderReplies(c.replies) +
       '</div>';
     }).join("");
   }
 
   // ==================== REALTIME POLLING ====================
-  // Cek Firebase tiap 2 detik, render cuma kalau data berubah.
-  // Jadi kalau admin hapus komentar → langsung hilang max 2 detik.
   async function pollComments() {
-    if (document.hidden) return; // hemat resource kalau tab gak aktif
+    if (document.hidden) return;
     try {
       var url = FIREBASE_BASE + "/" + COMMENTS_PATH + ".json";
       var res = await fetch(url, { cache: "no-store" });
       var text = await res.text();
 
-      // Kalau data sama persis dengan sebelumnya → skip render
       if (text === lastSnapshot) return;
-
       lastSnapshot = text;
 
       var data = null;
@@ -848,17 +967,15 @@ body {
       renderComments(data);
     } catch (err) {
       console.error("Poll error:", err);
-      // Jangan timpa list kalau cuma error jaringan sementara
     }
   }
 
   function startPolling() {
     if (pollTimer) clearInterval(pollTimer);
-    pollComments(); // langsung cek sekali
+    pollComments();
     pollTimer = setInterval(pollComments, POLL_INTERVAL);
   }
 
-  // Refresh lagi saat tab kembali aktif (biar gak nunggu 2 detik)
   document.addEventListener("visibilitychange", function() {
     if (!document.hidden) pollComments();
   });
@@ -882,7 +999,6 @@ body {
       });
       chatInput.value = "";
       chatInput.style.height = "auto";
-      // Paksa refresh langsung (reset snapshot biar ke-render)
       lastSnapshot = "";
       await pollComments();
     } catch (err) {
@@ -892,6 +1008,102 @@ body {
       btnSend.disabled = false;
     }
   }
+
+  // ==================== KIRIM BALASAN ====================
+  async function kirimBalasan(commentId, text) {
+    if (!currentUser) {
+      alert("Login dulu ya");
+      return;
+    }
+    text = (text || "").trim();
+    if (!text) return;
+    if (text.length > 500) return;
+
+    try {
+      await fbPost(COMMENTS_PATH + "/" + commentId + "/replies", {
+        email: currentUser.email,
+        text: text,
+        created: Date.now()
+      });
+      // tutup form
+      openReplyForms[commentId] = false;
+      lastSnapshot = "";
+      await pollComments();
+    } catch (err) {
+      console.error(err);
+      alert("Gagal ngirim balasan: " + err.message);
+    }
+  }
+
+  // ==================== EVENT DELEGATION ====================
+  chatList.addEventListener("click", function(e) {
+    // Toggle form balas
+    var toggle = e.target.closest(".btn-reply-toggle");
+    if (toggle) {
+      var cid = toggle.getAttribute("data-reply-id");
+      var form = chatList.querySelector('[data-reply-form="' + cid + '"]');
+      if (!form) return;
+      var isOpen = form.classList.contains("active");
+      if (isOpen) {
+        form.classList.remove("active");
+        openReplyForms[cid] = false;
+      } else {
+        // tutup yang lain dulu
+        chatList.querySelectorAll(".reply-form.active").forEach(function(f) {
+          f.classList.remove("active");
+        });
+        openReplyForms = {};
+        form.classList.add("active");
+        openReplyForms[cid] = true;
+        var ta = form.querySelector("textarea");
+        if (ta) { ta.focus(); }
+      }
+      return;
+    }
+
+    // Klik tombol Kirim balasan
+    var sendBtn = e.target.closest(".btn-reply-send");
+    if (sendBtn) {
+      var id = sendBtn.getAttribute("data-reply-send");
+      var form2 = chatList.querySelector('[data-reply-form="' + id + '"]');
+      if (!form2) return;
+      var input = form2.querySelector("textarea");
+      if (!input) return;
+      var txt = input.value.trim();
+      if (!txt) return;
+      sendBtn.disabled = true;
+      kirimBalasan(id, txt).finally(function() {
+        sendBtn.disabled = false;
+      });
+      return;
+    }
+  });
+
+  // Enter di textarea balasan = kirim (Shift+Enter = baris baru)
+  chatList.addEventListener("keydown", function(e) {
+    if (e.key !== "Enter" || e.shiftKey) return;
+    var ta = e.target;
+    if (!ta.matches || !ta.matches("[data-reply-input]")) return;
+    e.preventDefault();
+    var cid = ta.getAttribute("data-reply-input");
+    var form = chatList.querySelector('[data-reply-form="' + cid + '"]');
+    if (!form) return;
+    var sendBtn = form.querySelector(".btn-reply-send");
+    if (sendBtn) {
+      sendBtn.disabled = true;
+      kirimBalasan(cid, ta.value.trim()).finally(function() {
+        sendBtn.disabled = false;
+      });
+    }
+  });
+
+  // Auto-resize textarea balasan
+  chatList.addEventListener("input", function(e) {
+    var ta = e.target;
+    if (!ta.matches || !ta.matches("[data-reply-input]")) return;
+    ta.style.height = "auto";
+    ta.style.height = Math.min(ta.scrollHeight, 90) + "px";
+  });
 
   btnSend.addEventListener("click", function(e) {
     e.preventDefault();
