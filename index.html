@@ -625,7 +625,7 @@ body {
   </div>
 
   <h1 class="name">
-    Darun Akhirusshiam</span>
+    Darun Akhirusshiam
   </h1>
   <p class="bio">
     Keprok Atuh! 👋<br>
@@ -713,12 +713,12 @@ body {
   <div class="modal-card">
     <div class="modal-icon">✉️</div>
     <div class="modal-title">Login Duluch!</div>
-    <div class="modal-sub">Masukkan email kalian untuk ngirim komentar</div>
+    <div class="modal-sub">Masukkan nama kalian untuk ngirim komentar</div>
 
     <form id="loginForm">
       <div class="form-group">
-        <label for="emailInput">Email</label>
-        <input type="email" id="emailInput" placeholder="contoh: darunakhirusshiam@email.com" required autocomplete="email">
+        <label for="nameInput">Nama</label>
+        <input type="text" id="nameInput" placeholder="contoh: darun ganteng" required autocomplete="name" maxlength="40">
       </div>
       <button type="submit" class="btn-primary" id="btnLogin">Masuk</button>
       <div class="modal-error" id="loginError"></div>
@@ -736,7 +736,7 @@ body {
 
   var loginModal = document.getElementById("loginModal");
   var loginForm = document.getElementById("loginForm");
-  var emailInput = document.getElementById("emailInput");
+  var nameInput = document.getElementById("nameInput");
   var loginError = document.getElementById("loginError");
   var btnLogin = document.getElementById("btnLogin");
   var userBar = document.getElementById("userBar");
@@ -756,15 +756,15 @@ body {
   // ==================== SESSION ====================
   function loadSession() {
     try {
-      var saved = localStorage.getItem("user_email");
-      if (saved) currentUser = { email: saved };
+      var saved = localStorage.getItem("user_name");
+      if (saved) currentUser = { name: saved };
     } catch (e) {}
   }
-  function saveSession(email) {
-    try { localStorage.setItem("user_email", email); } catch (e) {}
+  function saveSession(name) {
+    try { localStorage.setItem("user_name", name); } catch (e) {}
   }
   function clearSession() {
-    try { localStorage.removeItem("user_email"); } catch (e) {}
+    try { localStorage.removeItem("user_name"); } catch (e) {}
   }
 
   function updateUI() {
@@ -772,8 +772,8 @@ body {
       loginModal.classList.remove("active");
       userBar.style.display = "flex";
       chatForm.style.display = "flex";
-      userEmail.textContent = currentUser.email;
-      userAvatar.textContent = currentUser.email.charAt(0).toUpperCase();
+      userEmail.textContent = currentUser.name;
+      userAvatar.textContent = currentUser.name.charAt(0).toUpperCase();
     } else {
       loginModal.classList.add("active");
       userBar.style.display = "none";
@@ -785,21 +785,28 @@ body {
   loginForm.addEventListener("submit", function(e) {
     e.preventDefault();
     loginError.textContent = "";
-    var email = emailInput.value.trim().toLowerCase();
-    var re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!re.test(email)) {
-      loginError.textContent = "Format email henteu valid.";
+    var name = nameInput.value.trim().replace(/\s+/g, " ");
+    if (name.length < 2) {
+      loginError.textContent = "Nama minimal 2 huruf.";
+      return;
+    }
+    if (name.length > 40) {
+      loginError.textContent = "Nama maksimal 40 huruf.";
+      return;
+    }
+    if (!/^[A-Za-z\u00C0-\u024F\u1E00-\u1EFF .'-]+$/.test(name)) {
+      loginError.textContent = "Nama teu meunang nganggo angka atawa simbol.";
       return;
     }
     btnLogin.disabled = true;
     btnLogin.textContent = "Memuat...";
     setTimeout(function() {
-      currentUser = { email: email };
-      saveSession(email);
+      currentUser = { name: name };
+      saveSession(name);
       updateUI();
       btnLogin.disabled = false;
       btnLogin.textContent = "Asup & Mulai Chat";
-      emailInput.value = "";
+      nameInput.value = "";
     }, 300);
   });
 
@@ -888,11 +895,11 @@ body {
 
   // ==================== RENDER ====================
   function renderReply(r) {
-    var initial = (r.email || "?").charAt(0).toUpperCase();
+    var initial = (r.name || "?").charAt(0).toUpperCase();
     return '<div class="reply-msg">' +
       '<div class="chat-msg-head">' +
         '<div class="chat-msg-avatar">' + initial + '</div>' +
-        '<div class="chat-msg-email">' + escapeHtml(r.email || "Anonim") + '</div>' +
+        '<div class="chat-msg-email">' + escapeHtml(r.name || "Anonim") + '</div>' +
         '<div class="chat-msg-time">' + relativeTime(r.created) + '</div>' +
       '</div>' +
       '<div class="chat-msg-text">' + escapeHtml(r.text || "") + '</div>' +
@@ -927,14 +934,14 @@ body {
     }
 
     chatList.innerHTML = comments.map(function(c) {
-      var initial = (c.email || "?").charAt(0).toUpperCase();
+      var initial = (c.name || "?").charAt(0).toUpperCase();
       var relTime = relativeTime(c.created);
       var fullTime = formatFullDateTime(c.created);
       var isReplyOpen = openReplyForms[c.id] ? "active" : "";
       return '<div class="chat-msg" data-id="' + c.id + '">' +
         '<div class="chat-msg-head">' +
           '<div class="chat-msg-avatar">' + initial + '</div>' +
-          '<div class="chat-msg-email">' + escapeHtml(c.email || "Anonim") + '</div>' +
+          '<div class="chat-msg-email">' + escapeHtml(c.name || "Anonim") + '</div>' +
           '<div class="chat-msg-time">' + relTime + '</div>' +
         '</div>' +
         '<div class="chat-msg-time-full">' + fullTime + '</div>' +
@@ -993,7 +1000,7 @@ body {
     btnSend.disabled = true;
     try {
       await fbPost(COMMENTS_PATH, {
-        email: currentUser.email,
+        name: currentUser.name,
         text: text,
         created: Date.now()
       });
@@ -1021,7 +1028,7 @@ body {
 
     try {
       await fbPost(COMMENTS_PATH + "/" + commentId + "/replies", {
-        email: currentUser.email,
+        name: currentUser.name,
         text: text,
         created: Date.now()
       });
